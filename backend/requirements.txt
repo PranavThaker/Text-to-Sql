@@ -3,3 +3,6 @@ uvicorn
 python-dotenv
 sqlalchemy
 psycopg2-binary
+sentence-transformers
+chromadb
+huggingface_hub
