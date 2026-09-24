@@ -6,3 +6,8 @@ psycopg2-binary
 sentence-transformers
 chromadb
 huggingface_hub
+langchain
+langgraph
+langchain-groq
+pydantic
+sqlglot

@@ -1,6 +1,6 @@
 import chromadb
-from schema_descriptions import schema_descriptions
-from example_queries import example_queries
+from retrieval.schema_descriptions import schema_descriptions
+from retrieval.example_queries import example_queries
 
 # Creates chromaDb Object
 def init_vector_store():
