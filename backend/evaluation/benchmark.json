@@ -1,0 +1,202 @@
+[
+    {
+        "question": "List all customers with their customer ID, names, and email addresses.",
+        "sql": "SELECT customer_id, customer_name, email FROM customers;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Show all products with their product ID, names, and prices.",
+        "sql": "SELECT product_id, product_name, price FROM products;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "List all orders with their order ID, order date, total amount, and status.",
+        "sql": "SELECT order_id, order_date, total_amount, status FROM orders;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Show all categories with their category ID, names, and descriptions.",
+        "sql": "SELECT category_id, category_name, category_description FROM categories;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Find all products with their product ID, name, and price where the price is above 1000.",
+        "sql": "SELECT product_id, product_name, price FROM products WHERE price > 1000;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "List all delivered orders with their order ID, customer ID, order date, and total amount.",
+        "sql": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE status = 'Delivered';",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Show all customers whose names contain the letter 'A', including their customer ID, name, and email.",
+        "sql": "SELECT customer_id, customer_name, email FROM customers WHERE customer_name ILIKE '%A%';",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "List every product with its product ID, name, and price, ordered from the cheapest to the most expensive.",
+        "sql": "SELECT product_id, product_name, price FROM products ORDER BY price ASC;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Show the five most expensive products with their product ID, name, and price.",
+        "sql": "SELECT product_id, product_name, price FROM products ORDER BY price DESC LIMIT 5;",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "Show all orders placed after September 5, 2026, including their order ID, customer ID, order date, total amount, and status.",
+        "sql": "SELECT order_id, customer_id, order_date, total_amount, status FROM orders WHERE order_date > '2026-09-05';",
+        "difficulty": "single-table"
+    },
+    {
+        "question": "List every product with its product ID, product name, and category name.",
+        "sql": "SELECT p.product_id, p.product_name, c.category_name FROM products p JOIN categories c ON p.category_id = c.category_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "Show each order with its order ID, customer name, order date, total amount, and status.",
+        "sql": "SELECT o.order_id, c.customer_name, o.order_date, o.total_amount, o.status FROM orders o JOIN customers c ON o.customer_id = c.customer_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "List each order ID, product name, and quantity for every product included in an order.",
+        "sql": "SELECT oi.order_id, p.product_name, oi.quantity FROM order_items oi JOIN products p ON oi.product_id = p.product_id ORDER BY oi.order_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "Show each order ID, customer name, product name, and quantity for every product in each order.",
+        "sql": "SELECT o.order_id, c.customer_name, p.product_name, oi.quantity FROM orders o JOIN customers c ON o.customer_id = c.customer_id JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id ORDER BY o.order_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "List every product name together with its category name and category description.",
+        "sql": "SELECT p.product_name, c.category_name, c.category_description FROM products p JOIN categories c ON p.category_id = c.category_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "Show the order ID, customer name, customer email, order date, and total amount for all orders placed by customers whose email is available.",
+        "sql": "SELECT o.order_id, c.customer_name, c.email, o.order_date, o.total_amount FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE c.email IS NOT NULL;",
+        "difficulty": "join"
+    },
+    {
+        "question": "Show the customer name, product name, and quantity for every order item.",
+        "sql": "SELECT c.customer_name, p.product_name, oi.quantity FROM customers c JOIN orders o ON c.customer_id = o.customer_id JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "List all products that have appeared in an order, including their product ID and product name.",
+        "sql": "SELECT DISTINCT p.product_id, p.product_name FROM products p JOIN order_items oi ON p.product_id = oi.product_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "Show the order ID, customer ID, order date, and quantity for orders containing the product named 'Mechanical Keyboard'.",
+        "sql": "SELECT o.order_id, o.customer_id, o.order_date, oi.quantity FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE p.product_name = 'Mechanical Keyboard';",
+        "difficulty": "join"
+    },
+    {
+        "question": "List the customer ID, customer name, and email of all customers who have placed at least one order.",
+        "sql": "SELECT DISTINCT c.customer_id, c.customer_name, c.email FROM customers c JOIN orders o ON c.customer_id = o.customer_id;",
+        "difficulty": "join"
+    },
+    {
+        "question": "For each category, show the category ID, category name, and the number of products in that category.",
+        "sql": "SELECT c.category_id, c.category_name, COUNT(p.product_id) AS product_count FROM categories c LEFT JOIN products p ON c.category_id = p.category_id GROUP BY c.category_id, c.category_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each customer, show the customer ID, customer name, and the number of orders they have placed.",
+        "sql": "SELECT c.customer_id, c.customer_name, COUNT(o.order_id) AS order_count FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each customer, show the customer ID, customer name, and the total amount they have spent.",
+        "sql": "SELECT c.customer_id, c.customer_name, COALESCE(SUM(o.total_amount), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each category, show the category ID, category name, and average product price.",
+        "sql": "SELECT c.category_id, c.category_name, AVG(p.price) AS average_price FROM categories c JOIN products p ON c.category_id = p.category_id GROUP BY c.category_id, c.category_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each category, show the category ID, category name, and maximum product price.",
+        "sql": "SELECT c.category_id, c.category_name, MAX(p.price) AS max_price FROM categories c JOIN products p ON c.category_id = p.category_id GROUP BY c.category_id, c.category_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each category, show the category ID, category name, and minimum product price.",
+        "sql": "SELECT c.category_id, c.category_name, MIN(p.price) AS min_price FROM categories c JOIN products p ON c.category_id = p.category_id GROUP BY c.category_id, c.category_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each order, show the order ID and the total number of items in that order.",
+        "sql": "SELECT o.order_id, SUM(oi.quantity) AS item_count FROM orders o JOIN order_items oi ON o.order_id = oi.order_id GROUP BY o.order_id;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each product, show the product ID, product name, and total quantity that has been ordered.",
+        "sql": "SELECT p.product_id, p.product_name, COALESCE(SUM(oi.quantity), 0) AS quantity_ordered FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.product_id, p.product_name;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "Show the total value of all orders as a single total order value.",
+        "sql": "SELECT SUM(total_amount) AS total_order_value FROM orders;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "For each order status, show the status and the number of orders with that status.",
+        "sql": "SELECT status, COUNT(*) AS order_count FROM orders GROUP BY status ORDER BY status;",
+        "difficulty": "aggregation"
+    },
+    {
+        "question": "List the product ID, product name, and price of products that are more expensive than the average product price.",
+        "sql": "SELECT product_id, product_name, price FROM products WHERE price > (SELECT AVG(price) FROM products);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the product ID, product name, and price of the products with the highest price.",
+        "sql": "SELECT product_id, product_name, price FROM products WHERE price = (SELECT MAX(price) FROM products);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the product ID, product name, and price of products that are cheaper than the average product price.",
+        "sql": "SELECT product_id, product_name, price FROM products WHERE price < (SELECT AVG(price) FROM products);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the customer ID, customer name, and email of customers who have placed at least one order worth more than 2500.",
+        "sql": "SELECT customer_id, customer_name, email FROM customers WHERE customer_id IN (SELECT customer_id FROM orders WHERE total_amount > 2500);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the customer ID, customer name, and email of customers who have never placed an order.",
+        "sql": "SELECT customer_id, customer_name, email FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the order ID, customer ID, order date, and total amount of orders whose total amount is greater than the average order amount.",
+        "sql": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the category ID and category name of categories containing at least one product priced above 2000.",
+        "sql": "SELECT category_id, category_name FROM categories WHERE category_id IN (SELECT category_id FROM products WHERE price > 2000);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the product ID, product name, and price of products that have never been included in an order.",
+        "sql": "SELECT product_id, product_name, price FROM products WHERE product_id NOT IN (SELECT product_id FROM order_items);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the customer ID, customer name, and total amount spent for customers who have spent more than the average customer spending.",
+        "sql": "SELECT c.customer_id, c.customer_name, SUM(o.total_amount) AS total_spent FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name HAVING SUM(o.total_amount) > (SELECT AVG(customer_total) FROM (SELECT SUM(total_amount) AS customer_total FROM orders GROUP BY customer_id) customer_spending);",
+        "difficulty": "subquery"
+    },
+    {
+        "question": "List the order ID, customer ID, order date, and total amount for orders containing at least one product priced above 1000.",
+        "sql": "SELECT DISTINCT o.order_id, o.customer_id, o.order_date, o.total_amount FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.product_id IN (SELECT product_id FROM products WHERE price > 1000);",
+        "difficulty": "subquery"
+    }
+]

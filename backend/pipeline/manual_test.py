@@ -1,5 +1,26 @@
 from pipeline.graph import app
 
+from pipeline.executor import execute_query
+
+
+def test_readonly_write_query():
+    print("\n--- Testing write query against read-only database user ---")
+
+    # Deliberately bypass validator.py and send a DELETE directly to executor.py.
+    sql = "DELETE FROM products WHERE product_id = 1"
+
+    result = execute_query(sql)
+
+    print("SQL:", sql)
+    print("Result:", result)
+
+    if result["success"]:
+        print("ERROR: Write query unexpectedly succeeded.")
+    else:
+        print("Expected failure: read-only database user rejected the write query.")
+
+
+
 questions = [
     "How many products are in each category?",
     "Show me all orders placed by customers.",
@@ -18,7 +39,8 @@ for question in questions:
         "retrieved_context": {},
         "generated_sql": "",
         "execution_result": {},
-        "retry_count": 0
+        "retry_count": 0,
+        'last_error':''
     }
     
     try:
@@ -40,3 +62,5 @@ for question in questions:
     except Exception as e:
         print("\nPIPELINE ERROR:")
         print(e)
+test_readonly_write_query()
+        

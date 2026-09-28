@@ -3,8 +3,13 @@ from database.connection import get_session
 
 def execute_query(sql:str):
     session = get_session()
-    
+    sql = sql.strip()
     try:
+        
+        if sql.upper().startswith('SELECT') and 'LIMIT' not in sql.upper():
+            sql = sql.rstrip().rstrip(';')+ " LIMIT 100"
+        
+        session.execute(text('SET statement_timeout = 5000'))
         
         result = session.execute(text(sql))
         

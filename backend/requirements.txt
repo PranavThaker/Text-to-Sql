@@ -11,3 +11,5 @@ langgraph
 langchain-groq
 pydantic
 sqlglot
+pytest
+pytest-asyncio

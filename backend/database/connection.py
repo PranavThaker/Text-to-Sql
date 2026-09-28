@@ -7,12 +7,10 @@ load_dotenv()
 
 
 def get_database_url():
-    database_url = os.getenv("DATABASE_URL")
-
-    print("DATABASE_URL:", database_url)
+    database_url = os.getenv("READONLY_DATABASE_URL")
 
     if not database_url:
-        raise ValueError("DATABASE_URL environment variable is not set")
+        raise ValueError("READONLY_DATABASE_URL environment variable is not set")
 
     return database_url
 

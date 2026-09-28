@@ -17,14 +17,18 @@ class pipelineState(TypedDict):
     generated_sql:str
     execution_result:dict
     retry_count:int
+    last_error:str
     
 def generate_sql_node(state:pipelineState):
     
     # Takes question from state
     question = state['question']
     
+    # Retrieve the last error if any else empty
+    last_error = state.get('last_error','')
+    
     # Initialize the object of LLM
-    llm = ChatGroq(model='qwen/qwen3.8-27b')
+    llm = ChatGroq(model='qwen/qwen3.8-27b',max_tokens=600,max_retries=0)
     
     # Extracts result from ChromaDB
     retrieved_context = retrieve_context(question)
@@ -53,6 +57,24 @@ def generate_sql_node(state:pipelineState):
         schema_context = schema_context,
         example_queries = example_queries
     )
+    
+    # If any error is occured previously then it is sent to the LLM 
+    if last_error:
+        system_prompt += f"""
+
+        Previous attempt failed with this error:
+
+        {last_error}
+
+        Generate a corrected SQL query.
+        
+        IMPORTANT:
+        - Do not repeat the previous SQL.
+        - Use only tables and columns from the provided schema.
+        - The corrected SQL must directly answer the original question.
+        - Do not use placeholder SQL such as SELECT 1.
+        - Re-check all JOIN, GROUP BY, and aggregate logic.
+        """
     
     # LLM is called
     response = llm.invoke([
@@ -132,7 +154,7 @@ def handle_error_node(state:pipelineState):
     retry_count = state['retry_count']
     
     # Retrieves error message
-    error_message = execution_result.get("error","Unknown execution error")
+    error_message = execution_result.get("error",execution_result.get('reason','unknown error'))
 
     # Checks if retry limit is reached or not 
     if retry_count<2:
@@ -141,6 +163,7 @@ def handle_error_node(state:pipelineState):
                 'success':False,
                 'error':error_message
             },
+            "last_error":error_message,
             "retry_count":retry_count+1
         }
     
@@ -149,12 +172,13 @@ def handle_error_node(state:pipelineState):
             'success':False,
             'error':error_message
         },
+        'last_error':error_message,
         'retry_count':2
     }
     
 def summarize_node(state:pipelineState):
     # Use LLM Object
-    llm = ChatGroq(model='qwen/qwen3.8-27b')
+    llm = ChatGroq(model='qwen/qwen3.8-27b',max_tokens=400,max_retries=0)
     
     # Fetches execution result
     execution_result = state['execution_result']
@@ -210,12 +234,13 @@ def retry_router(state:pipelineState):
     if state['retry_count']<2:
         return 'retry'
     return 'stop'
-    
+     
+
 # Initialize Graph Object
 workflow = StateGraph(pipelineState)
 
 # Add Nodes
-workflow.add_node('summarize_node',summarize_node)
+# workflow.add_node('summarize_node',summarize_node)
 workflow.add_node('generate_sql_node',generate_sql_node)
 workflow.add_node('validate_node',validate_node)
 workflow.add_node('execute_node',execute_node)
@@ -240,7 +265,7 @@ workflow.add_conditional_edges(
     'execute_node',
     execution_router,
     {
-        'summarize':'summarize_node',
+        'summarize':END,
         'handle_error':'handle_error_node'
     }
 )
@@ -255,7 +280,7 @@ workflow.add_conditional_edges(
     }
 )
 
-workflow.add_edge('summarize_node',END)
+# workflow.add_edge('summarize_node',END)
 
 # Compile Graph
 app = workflow.compile()
